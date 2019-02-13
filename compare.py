@@ -26,7 +26,7 @@ for name, top_bl in top_basic.groupby(by="file"):
 
     for i, row in top_l.iterrows():
         idx = row["orig_index"]
-        lena_bins.extend(range(idx, idx + 60, 5))
+        lena_bins.extend(range(idx, idx+60, 5))
 
     lena_bins.sort()
 
@@ -35,8 +35,7 @@ for name, top_bl in top_basic.groupby(by="file"):
         bl_range = range(idx, idx + 60, 5)
         overlap = 0
         for x in bl_range:
-            if x in lena_bins:
-                overlap += 1
+            if x in lena_bins: overlap += 1
         results.append([name, idx, row['num_words'], overlap])
         bl_bins.extend(bl_range)
     bl_bins.sort()
@@ -98,8 +97,10 @@ for name, top_bl in top_basic.groupby(by="file"):
     top_l = top_lena.query("file == \"{}\"".format(name)).iloc[0]
     top_b = top_bl.iloc[0]
 
-    results.append([name, top_b['onset'] * 5 * 60 * 1000, "ms", "bl"])
-    results.append([name, top_l['orig_index'] * 5 * 60 * 1000, "ms", "lena"])
+    results.append([name, top_b['onset']*5*60*1000, "ms", "bl"])
+    results.append([name, top_l['orig_index']*5*60*1000, "ms", "lena"])
+
+
 
 
 with open("top_hour_bl_vs_lena.csv", "wb") as out:

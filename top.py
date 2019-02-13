@@ -4,18 +4,18 @@ import os
 
 
 def top_hour(all_bl, subj, month, n):
-    df = all_bl.query(
-        "(subj == \"{}\") & (month == \"{}\") & (audio_video == \"audio\")".format(subj, month))
+    df = all_bl.query("(subj == \"{}\") & (month == \"{}\") & (audio_video == \"audio\")".format(subj, month))
     df = df.sort_values(by=["onset"])
     i = 0
     j = 60
     max = df.offset.max()
 
+
+
     results = []
-    while j * 60 * 1000 < max:
-        window = df.query("onset >= {} & offset <= {}".format(
-            i * 60 * 1000, j * 60 * 1000))
-        results.append((i / 5, window.shape[0]))
+    while j*60*1000 < max:
+        window = df.query("onset >= {} & offset <= {}".format(i*60*1000, j*60*1000))
+        results.append((i/5, window.shape[0]))
         i += 5
         j += 5
     results.sort(key=lambda x: x[1], reverse=True)
@@ -24,10 +24,9 @@ def top_hour(all_bl, subj, month, n):
 
 def non_overlapping(regions, n):
     results = []
-
     def overlap(x):
         for r in results:
-            if r[0] - 12 < x[0] < r[0] + 12:
+            if r[0]-12 < x[0] < r[0]+12:
                 return True
         return False
 
@@ -49,8 +48,8 @@ if __name__ == "__main__":
     for (subj, month), grp in regions.groupby(by=["subj", "month"]):
         print "{}_{}".format(subj, month)
         ranked = top_hour(all_bl, subj, month, 5)
-        results.extend([["{}_{}".format(subj, month)] + list(x)
-                        for x in ranked])
+        results.extend([["{}_{}".format(subj, month)] + list(x) for x in ranked])
 
     out = pd.DataFrame(results, columns=["file", "onset", "num_words"])
     out.to_csv("top_bl_hours.csv", index=False)
+
